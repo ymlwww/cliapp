@@ -53,7 +53,7 @@ debug_print() ;
 
 }
 
-void read_fun(int agrc, char * argv [ ])
+void attach_fun(int agrc, char * argv [ ])
 {
 debug_print() ;
 
@@ -61,7 +61,103 @@ debug_print() ;
 	
 	while (i < cmd_num_current) 
 	{
-		if (read_fun == CmdTbl[i].CmdFun)
+		if (attach_fun == CmdTbl[i].CmdFun)
+		{
+			if(agrc==3)
+			{
+				printf("%s the p4 program %s  to the switch %s \n", CmdTbl[i].name,  argv[1], argv[2]);
+			}
+			else
+			{
+				printf("incorret usage!!!\n");
+				printf("usage: attach program-name switch\n");
+			}			
+			break;
+		}
+		
+		i++;
+	}
+
+		
+	return; 
+}
+
+void detach_fun(int agrc, char * argv [ ])
+{
+debug_print() ;
+
+	int i = 0;
+	
+	while (i < cmd_num_current) 
+	{
+		if (detach_fun == CmdTbl[i].CmdFun)
+		{
+			if(agrc==2)//需要加一个判断原来的程序是否已经attach了
+			{
+				printf("%s the p4 program %s  of the debugger \n", CmdTbl[i].name,  argv[1]);
+			}
+			else
+			{
+				printf("incorret usage!!!\n");
+				printf("usage: detach program-name\n");
+			}		
+			break;
+		}
+		i++;
+	}	
+	return; 
+}
+
+void break_fun(int agrc, char * argv [ ])
+{
+debug_print() ;
+
+	int i = 0;
+	
+	while (i < cmd_num_current) 
+	{
+		if (break_fun == CmdTbl[i].CmdFun)
+		{
+			printf("%s -- %s\n", CmdTbl[i].name,  CmdTbl[i].usage);
+			break;
+		}
+		i++;
+	}
+
+		
+	return; 
+}
+
+void next_fun(int agrc, char * argv [ ])
+{
+debug_print() ;
+
+	int i = 0;
+	
+	while (i < cmd_num_current) 
+	{
+		if (next_fun == CmdTbl[i].CmdFun)
+		{
+			printf("go the next breakpoint\n");
+			break;
+		}
+		
+		i++;
+	}
+
+		
+	return; 
+}
+
+void watch_fun(int agrc, char * argv [ ])
+{
+debug_print() ;
+
+	int i = 0;
+	
+	while (i < cmd_num_current) 
+	{
+		if (watch_fun == CmdTbl[i].CmdFun)
 		{
 			printf("%s -- %s\n", CmdTbl[i].name,  CmdTbl[i].usage);
 			break;
@@ -74,7 +170,7 @@ debug_print() ;
 	return; 
 }
 
-void write_fun(int agrc, char * argv [ ])
+void show_fun(int agrc, char * argv [ ])
 {
 debug_print() ;
 
@@ -82,7 +178,7 @@ debug_print() ;
 	
 	while (i < cmd_num_current) 
 	{
-		if (write_fun == CmdTbl[i].CmdFun)
+		if (show_fun == CmdTbl[i].CmdFun)
 		{
 			printf("%s -- %s\n", CmdTbl[i].name,  CmdTbl[i].usage);
 			break;
@@ -95,7 +191,7 @@ debug_print() ;
 	return; 
 }
 
-void setenv_fun(int agrc, char * argv [ ])
+void rmbp_fun(int agrc, char * argv [ ])
 {
 debug_print() ;
 
@@ -103,9 +199,15 @@ debug_print() ;
 	
 	while (i < cmd_num_current) 
 	{
-		if (setenv_fun == CmdTbl[i].CmdFun)
+		if (rmbp_fun == CmdTbl[i].CmdFun)
 		{
-			printf("%s -- %s\n", CmdTbl[i].name,  CmdTbl[i].usage);
+			if(agrc==1)//需要判断是否这样的breakpoint
+				printf("remove the break point naming: %s\n", argv[1]);
+			else
+			{
+				printf("incorret usage!!!\n");
+				printf("usage: rmbp breakpoint-name\n");
+			}
 			break;
 		}
 		
@@ -115,7 +217,6 @@ debug_print() ;
 		
 	return; 
 }
-
 int register_cmd(char *name, char *usage, cmd_fun_t fun)
 {
 	int ret;
@@ -516,9 +617,13 @@ int main(int argc, char **argv)
 	memset(CmdTbl, 0, sizeof(CMD_STRUCT_T)*MAX_CMD_NUM);
 	
 	register_cmd("help", "list all cmd\n\r",       HelpCmdExeFun);
-	register_cmd("read", "read memory\n\r",    read_fun);
-	register_cmd("write", "write memory\n\r",  write_fun);
-	register_cmd("setenv", "set env\n\r",        setenv_fun);
+	register_cmd("attach", "usage: attach program-name switch\n\r",     attach_fun);
+	register_cmd("detach", "usage: detach program-name\n\r",     detach_fun);
+	register_cmd("break", "break pimitives\n\r",        break_fun);
+	register_cmd("next", "usage: go to the next step\n\r",         next_fun);
+	register_cmd("show", "show primitives\n\r",         show_fun);
+	register_cmd("watch", "watch primitives\n\r",       watch_fun);
+	register_cmd("rmbp", "usage: rmbp breakpoint-name\n\r",        rmbp_fun);
 	
 debug_print();
 	while (1)
