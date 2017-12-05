@@ -116,11 +116,16 @@ debug_print() ;
 	
 	while (i < cmd_num_current) 
 	{
-		if (break_fun == CmdTbl[i].CmdFun)
+		if(agrc>=3)//又偷懒了，，先这样吧。。。
 		{
-			printf("%s -- %s\n", CmdTbl[i].name,  CmdTbl[i].usage);
-			break;
+			printf("set the break point\n");
 		}
+		else
+		{
+			printf("incorret usage!!!\n");
+			printf("usage: break [-n name] –t tablename –f {[field : value], ... }\n");
+		}
+		break;
 		i++;
 	}
 
@@ -159,7 +164,15 @@ debug_print() ;
 	{
 		if (watch_fun == CmdTbl[i].CmdFun)
 		{
-			printf("%s -- %s\n", CmdTbl[i].name,  CmdTbl[i].usage);
+			if(agrc>=3)//又偷懒了，，先这样吧。。。
+			{
+				printf("the watch primitive will show the network path traversed by the specific flow\n");
+			}
+			else
+			{
+				printf("incorret usage!!!\n");
+				printf("usage: watch [-s switch] –f {[field : value], ... }\n");
+			}
 			break;
 		}
 		
@@ -180,7 +193,24 @@ debug_print() ;
 	{
 		if (show_fun == CmdTbl[i].CmdFun)
 		{
-			printf("%s -- %s\n", CmdTbl[i].name,  CmdTbl[i].usage);
+			if(agrc==2)
+			{
+				if(argv[1][1]=='b')//偷懒了。。
+					printf("This option shows the information of all breakpoints.\n");
+				if(argv[1][1]=='p')
+					printf("This option shows the information of all programs.\n");
+				if(argv[1][1]=='a')
+					printf("This option shows the information of all compound actions.\n");
+				if(argv[1][1]=='t')
+					printf("This option shows the information of all tables.\n");
+				if(argv[1][1]=='h')
+					printf("This option shows the information of all header fields declared in the P4 program.\n");
+			}
+			else
+			{
+				printf("incorret usage!!!\n");
+				printf("usage: show [-b] [-p] [-a] [-t] [-h]\n");
+			}
 			break;
 		}
 		
@@ -619,10 +649,10 @@ int main(int argc, char **argv)
 	register_cmd("help", "list all cmd\n\r",       HelpCmdExeFun);
 	register_cmd("attach", "usage: attach program-name switch\n\r",     attach_fun);
 	register_cmd("detach", "usage: detach program-name\n\r",     detach_fun);
-	register_cmd("break", "break pimitives\n\r",        break_fun);
+	register_cmd("break", "usage: break [-n name] –t tablename –f {[field : value], ... }\n\r",        break_fun);
 	register_cmd("next", "usage: go to the next step\n\r",         next_fun);
-	register_cmd("show", "show primitives\n\r",         show_fun);
-	register_cmd("watch", "watch primitives\n\r",       watch_fun);
+	register_cmd("show", "usage: show [-b] [-p] [-a] [-t] [-h]\n\r",         show_fun);
+	register_cmd("watch", "usage: watch [-s switch] –f {[field : value], ... }\n\r",       watch_fun);
 	register_cmd("rmbp", "usage: rmbp breakpoint-name\n\r",        rmbp_fun);
 	
 debug_print();
